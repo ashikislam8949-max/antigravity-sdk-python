@@ -142,3 +142,21 @@ responses, and optional token usage telemetry.
 ```
 python interactive_cli.py
 ```
+
+### [agent_builders_bot.py](agent_builders_bot.py)
+**Interactive Agent Builders Bot that designs and scaffolds agents.**
+
+A streaming CLI assistant that interviews you about the agent you want to
+build. Design tools live on a stdio MCP server
+([agent_builders_mcp.py](../resources/agent_builders_mcp.py)) and are
+advertised by name, the same way a Grok bot MCP connection sets
+`advertiseTools: true`. The bot consults the `google-antigravity-sdk` skill,
+drafts a spec, and writes a starter `.py` file under `./agent_scaffolds/`.
+
+**Concepts:** `McpStdioServer`, named MCP tools, `TemplatedSystemInstructions`,
+`skills_paths`, deny-by-default policies, read-only `CapabilitiesConfig`,
+streaming REPL.
+
+```
+python agent_builders_bot.py
+```
