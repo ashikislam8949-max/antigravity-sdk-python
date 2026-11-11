@@ -29,6 +29,7 @@ mini-applications:
 | Example | What it demonstrates |
 |---|---|
 | [interactive_cli.py](deep_dives/interactive_cli.py) | Full interactive CLI with custom tools, MCP servers, and hook-based tool approval. |
+| [agent_builders_bot.py](deep_dives/agent_builders_bot.py) | Agent Builders Bot — interview, draft a spec, and scaffold a starter Antigravity agent via CLI. |
 | [agent_middleware.py](deep_dives/agent_middleware.py) | Stacked hooks as transparent middleware — rate limiting, audit logging, and error recovery. |
 | [host_tool_hooks.py](deep_dives/host_tool_hooks.py) | Every supported lifecycle hook wired and logged (session, turn, tool, subagent, compaction, interaction). |
 | [round_based_chat.py](deep_dives/round_based_chat.py) | Synchronized multi-agent chat room with parallel turns, triggers, and opt-out via custom tools. |
