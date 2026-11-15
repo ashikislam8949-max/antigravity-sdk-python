@@ -180,7 +180,9 @@ async def main() -> None:
 
   # Stdio MCP connection. Tool names stay visible to the model, matching a
   # Grok bot defineConnection({ command, args, advertiseTools: true }).
+  # `name` is required by published google-antigravity wheels (BaseMcpServerConfig).
   mcp_server = types.McpStdioServer(
+      name="agent-builders",
       command=sys.executable,
       args=[
           mcp_path,
@@ -189,20 +191,35 @@ async def main() -> None:
       ],
   )
 
+  # Published wheels name MCP tools as "server/tool" and accept
+  # policy.allow(mcp_server, mcp_tools=[...]). Older trees still use bare names.
+  try:
+    mcp_allow = policy.allow(mcp_server, mcp_tools=list(_MCP_TOOLS))
+  except TypeError:
+    mcp_allow = [policy.allow(name) for name in _MCP_TOOLS]
+
+  capability_kwargs: dict = {
+      "enabled_tools": [
+          types.BuiltinTools.VIEW_FILE,
+          types.BuiltinTools.LIST_DIR,
+          types.BuiltinTools.SEARCH_DIR,
+          types.BuiltinTools.FIND_FILE,
+          types.BuiltinTools.ASK_QUESTION,
+          types.BuiltinTools.FINISH,
+      ],
+  }
+  if hasattr(types, "AgentBehavior"):
+    capability_kwargs["agent_behavior"] = types.AgentBehavior.INTERACTIVE
+
   config = LocalAgentConfig(
       system_instructions=_build_system_instructions(scaffold_dir, skill_path),
       skills_paths=[skill_path],
       mcp_servers=[mcp_server],
       workspaces=[scaffold_dir, skill_path],
-      capabilities=types.CapabilitiesConfig(
-          enabled_tools=[
-              *types.BuiltinTools.read_only(),
-              types.BuiltinTools.ASK_QUESTION,
-          ],
-      ),
+      capabilities=types.CapabilitiesConfig(**capability_kwargs),
       policies=[
           policy.deny_all(),
-          *[policy.allow(name) for name in _MCP_TOOLS],
+          mcp_allow,
           policy.allow(types.BuiltinTools.VIEW_FILE.value),
           policy.allow(types.BuiltinTools.LIST_DIR.value),
           policy.allow(types.BuiltinTools.SEARCH_DIR.value),
